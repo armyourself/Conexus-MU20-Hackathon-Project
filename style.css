@@ -422,7 +422,12 @@ body.dark .navbar {
   transition: width 0.25s ease;
 }
 
-.dock-links a:hover::after,
+/* Only underline on hover — except for .active */
+.dock-links a:hover::after {
+  width: 100%;
+}
+
+/* Keep underline permanently for active page (like Emergencies) */
 .dock-links a.active::after {
   width: 100%;
 }
@@ -489,4 +494,82 @@ body.dark .navbar {
 }
 body.dark .msg {
   color: #bbb;
+}
+#map {
+  height: 500px;
+  width: 100%;
+  border-radius: 15px;  
+  margin-top: 1rem;
+}
+.context-menu {
+  position: absolute;
+  background: #f9fafc;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  font-family: 'Poppins', sans-serif;
+  width: 260px;
+  animation: popIn 0.2s ease-in-out;
+  z-index: 999;
+}
+
+.emergency-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emergency-form h3 {
+  margin: 0;
+  text-align: center;
+  color: #1d4ed8; /* hospital blue */
+  font-weight: 700;
+}
+
+.emergency-form label {
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+}
+
+.emergency-form input,
+.emergency-form select {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.emergency-form input:focus,
+.emergency-form select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
+}
+
+.emergency-form button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.emergency-form button:hover {
+  background: #1e40af;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

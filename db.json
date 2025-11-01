@@ -24,6 +24,13 @@
       "email": "pluhar@gmail.com",
       "password": "byebye",
       "role": "patient"
+    },
+    {
+      "id": "4d2f",
+      "username": "apollo",
+      "email": "avadhootumarikar@gmail.com",
+      "password": "joemama",
+      "role": "patient"
     }
   ],
   "alerts": [
@@ -57,6 +64,16 @@
       "expiry": "2025-11-01",
       "supplier": "anus",
       "category": "shit"
+    }
+  ],
+  "emergencies": [
+    {
+      "id": "3582",
+      "name": "Cardiac arrest",
+      "type": "cardiac arrest",
+      "urgency": "Critical",
+      "lat": 22.733070887830518,
+      "lng": 75.86568832353807
     }
   ]
 }

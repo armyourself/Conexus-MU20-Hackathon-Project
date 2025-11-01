@@ -374,19 +374,112 @@ function displayInventory(list) {
   });
 }
 
-if (searchInput) {
-  searchInput.addEventListener("input", async (e) => {
-    const res = await fetch(apiInventory);
-    const data = await res.json();
-    const searchTerm = e.target.value.toLowerCase();
-    const filtered = data.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchTerm) ||
-        item.supplier.toLowerCase().includes(searchTerm) ||
-        item.category.toLowerCase().includes(searchTerm)
-    );
-    displayInventory(filtered);
+// === Emergencies Page ===
+if (document.body.classList.contains("page-emergencies")) {
+  const map = L.map('map').setView([22.7196, 75.8577], 13); // centered on Indore
+
+  // add base map tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // 🩸 load emergencies from db.json
+  async function loadEmergencies() {
+    try {
+      const res = await fetch('http://localhost:5000/emergencies');
+      const data = await res.json();
+      data.forEach(e => {
+        L.marker([e.lat, e.lng])
+          .addTo(map)
+          .bindPopup(`<b>${e.name}</b><br>${e.type}<br>Urgency: ${e.urgency}`);
+      });
+    } catch (err) {
+      console.error("Couldn’t load emergencies:", err);
+    }
+  }
+  loadEmergencies();
+
+  // 😎 right-click to add new emergency
+  map.on('contextmenu', function (e) {
+    const oldMenu = document.querySelector('.context-menu');
+    if (oldMenu) oldMenu.remove();
+
+  const menu = document.createElement('div');
+menu.className = 'context-menu';
+menu.innerHTML = `
+  <form id="emergencyForm" class="emergency-form">
+    <h3>🩺 New Emergency</h3>
+    
+    <label for="emergencyName">Name</label>
+    <input type="text" id="emergencyName" placeholder="e.g. Cardiac Arrest in Ward 5" required>
+
+    <label for="emergencyType">Type</label>
+    <input type="text" id="emergencyType" placeholder="e.g. Cardiac Arrest, Trauma, Seizure" required>
+
+    <label for="emergencyUrgency">Urgency</label>
+    <select id="emergencyUrgency" required>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+      <option value="Critical">Critical</option>
+    </select>
+
+    <button type="submit">Add 🚨</button>
+  </form>
+`;
+document.body.appendChild(menu);
+
+
+    menu.style.position = 'absolute';
+    menu.style.left = e.originalEvent.pageX + 'px';
+    menu.style.top = e.originalEvent.pageY + 'px';
+    menu.style.background = '#fff';
+    menu.style.padding = '10px';
+    menu.style.borderRadius = '8px';
+    menu.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    menu.style.zIndex = '9999';
+    document.body.appendChild(menu);
+
+    const form = menu.querySelector('#emergencyForm');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const newEmergency = {
+        name: document.getElementById('emergencyName').value,
+        type: document.getElementById('emergencyType').value,
+        urgency: document.getElementById('emergencyUrgency').value,
+        lat: e.latlng.lat,
+        lng: e.latlng.lng
+      };
+
+      try {
+        await fetch('http://localhost:5000/emergencies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEmergency)
+        });
+
+        // Add marker instantly
+        L.marker([e.latlng.lat, e.latlng.lng])
+          .addTo(map)
+          .bindPopup(`<b>${newEmergency.name}</b><br>${newEmergency.type}<br>Urgency: ${newEmergency.urgency}`)
+          .openPopup();
+
+      } catch (err) {
+        console.error("Failed to save emergency:", err);
+      }
+
+      menu.remove();
+    });
+  });
+
+  // 💥 close form only if clicked outside
+  document.addEventListener('click', (event) => {
+    const menu = document.querySelector('.context-menu');
+    if (menu && !menu.contains(event.target) && !event.target.closest('.leaflet-container')) {
+      menu.remove();
+    }
   });
 }
-
-if (tableBody) loadInventory();
