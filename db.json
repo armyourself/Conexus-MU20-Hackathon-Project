@@ -31,39 +31,40 @@
       "email": "avadhootumarikar@gmail.com",
       "password": "joemama",
       "role": "patient"
+    },
+    {
+      "id": "dae5",
+      "username": "bye",
+      "email": "avadhootumarikar@gmail.com",
+      "password": "hello",
+      "role": "patient"
     }
   ],
   "alerts": [
     {
-      "id": "1",
-      "message": "System initialized successfully 💻",
-      "severity": "info",
-      "user": "admin",
-      "global": true
-    },
-    {
-      "id": "c080",
-      "message": "I died",
+      "id": "d63e",
+      "message": "I am gonna die",
       "severity": "warning",
-      "user": "apollo",
-      "global": false
-    },
-    {
-      "id": "1951",
-      "message": "I am died",
-      "severity": "info",
-      "user": "hello",
+      "user": "bye",
       "global": false
     }
   ],
   "inventory": [
     {
-      "id": "4317",
-      "name": "shit",
+      "id": "58ee",
+      "name": "Paracetamols",
       "qty": "12",
-      "expiry": "2025-11-01",
-      "supplier": "anus",
-      "category": "shit"
+      "expiry": "2025-11-02",
+      "supplier": "homeo",
+      "category": "anti"
+    },
+    {
+      "id": "e2ff",
+      "name": "Paracetamols",
+      "qty": "12",
+      "expiry": "2025-11-02",
+      "supplier": "homeo",
+      "category": "anti"
     }
   ],
   "emergencies": [
@@ -74,6 +75,15 @@
       "urgency": "Critical",
       "lat": 22.733070887830518,
       "lng": 75.86568832353807
+    },
+    {
+      "id": "27d2",
+      "name": "Cardiac arrest",
+      "type": "cardiac arrest",
+      "urgency": "Low",
+      "lat": 22.725523811089413,
+      "lng": 75.85899352983688
     }
-  ]
+  ],
+  "appointments": []
 }

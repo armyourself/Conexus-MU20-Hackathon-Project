@@ -483,3 +483,257 @@ document.body.appendChild(menu);
     }
   });
 }
+// === Appointments Page ===
+if (document.body.classList.contains("page-appointments")) {
+  const form = document.getElementById("appointmentForm");
+  const tableBody = document.querySelector("#appointmentsTable tbody");
+
+  async function loadAppointments() {
+    const res = await fetch("http://localhost:5000/appointments");
+    const data = await res.json();
+    renderAppointments(data);
+  }
+
+  function renderAppointments(appointments) {
+    tableBody.innerHTML = "";
+    appointments.forEach((appt, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${appt.patient}</td>
+        <td>${appt.doctor}</td>
+        <td>${appt.date}</td>
+        <td>${appt.time}</td>
+        <td><button class="delete-btn" data-id="${appt.id}">❌</button></td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const newAppt = {
+      patient: document.getElementById("patientName").value,
+      doctor: document.getElementById("doctorName").value,
+      date: document.getElementById("appointmentDate").value,
+      time: document.getElementById("appointmentTime").value
+    };
+
+    await fetch("http://localhost:5000/appointments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newAppt)
+    });
+
+    form.reset();
+    loadAppointments();
+  });
+
+  tableBody.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("delete-btn")) {
+      const id = e.target.dataset.id;
+      await fetch(`http://localhost:5000/appointments/${id}`, {
+        method: "DELETE"
+      });
+      loadAppointments();
+    }
+  });
+
+  loadAppointments();
+}
+// === DASHBOARD MAGIC ===
+document.addEventListener("DOMContentLoaded", () => {
+  if (!document.body.classList.contains("page-dashboard")) return;
+
+  const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+  // 🧮 Stats Calculation
+  const totalMedicines = inventory.length;
+  const lowStock = inventory.filter(item => item.quantity < 10).length;
+  const expiredCount = inventory.filter(item => new Date(item.expiry) < new Date()).length;
+  const stockValue = inventory.reduce((sum, item) => sum + (item.quantity * (item.price || 1)), 0);
+
+  // 🧾 Update the Stats on Dashboard
+  document.getElementById("totalMedicines").textContent = totalMedicines;
+  document.getElementById("lowStock").textContent = lowStock;
+  document.getElementById("expiredCount").textContent = expiredCount;
+  document.getElementById("stockValue").textContent = stockValue.toLocaleString();
+
+  // 📋 Fill the Summary Table
+  const tbody = document.querySelector("#overviewTable tbody");
+  tbody.innerHTML = inventory.map((item, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${item.name}</td>
+      <td>${item.quantity}</td>
+      <td>${item.expiry}</td>
+      <td>${item.category}</td>
+    </tr>
+  `).join("");
+
+  // 📊 Inventory Chart (using Chart.js)
+  const ctx = document.getElementById("inventoryChart").getContext("2d");
+  const categories = [...new Set(inventory.map(item => item.category))];
+  const categoryCounts = categories.map(cat =>
+    inventory.filter(item => item.category === cat).length
+  );
+
+  new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: categories,
+      datasets: [{
+        label: "Medicines by Category",
+        data: categoryCounts,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: "bottom" }
+      }
+    }
+  });
+});
+// ======== DASHBOARD AUTO-STATS LOADER ======== //
+if (document.body.classList.contains("page-dashboard")) {
+  const API_URL = "http://localhost:5000/inventory";
+
+  async function loadDashboardStats() {
+    try {
+      const res = await fetch(API_URL);
+      const inventory = await res.json();
+
+      // Elements
+      const totalMedicines = document.getElementById("totalMedicines");
+      const lowStock = document.getElementById("lowStock");
+      const expiredCount = document.getElementById("expiredCount");
+      const stockValue = document.getElementById("stockValue");
+      const overviewTable = document.querySelector("#overviewTable tbody");
+
+      // Stats calc
+      const today = new Date();
+      totalMedicines.textContent = inventory.length;
+      lowStock.textContent = inventory.filter((m) => m.qty < 10).length;
+      expiredCount.textContent = inventory.filter((m) => new Date(m.expiry) < today).length;
+      stockValue.textContent = inventory.reduce((acc, m) => acc + m.qty * 50, 0).toLocaleString();
+
+      // Table stuff
+      overviewTable.innerHTML = "";
+      inventory.forEach((m, i) => {
+        overviewTable.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${m.name}</td>
+            <td>${m.qty}</td>
+            <td>${m.expiry}</td>
+            <td>${m.category}</td>
+          </tr>`;
+      });
+
+      // Chart.js doughnut
+      const ctx = document.getElementById("inventoryChart").getContext("2d");
+      const categories = [...new Set(inventory.map((m) => m.category))];
+      const dataCounts = categories.map((c) => inventory.filter((m) => m.category === c).length);
+
+      new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: categories,
+          datasets: [
+            {
+              data: dataCounts,
+              backgroundColor: ["#7C3AED", "#06B6D4", "#F59E0B", "#EF4444", "#10B981"],
+            },
+          ],
+        },
+        options: {
+          plugins: { legend: { position: "bottom" } },
+        },
+      });
+    } catch (err) {
+      console.error("Dashboard load error:", err);
+    }
+  }
+
+  loadDashboardStats();
+}
+// ======== 🧠 DASHBOARD INVENTORY CHART FIX ======== //
+if (document.body.classList.contains("page-dashboard")) {
+  const API_URL = "http://localhost:5000/inventory";
+
+  async function loadDashboardStats() {
+    try {
+      const res = await fetch(API_URL);
+      const inventory = await res.json();
+
+      const totalMedicines = document.getElementById("totalMedicines");
+      const lowStock = document.getElementById("lowStock");
+      const expiredCount = document.getElementById("expiredCount");
+      const stockValue = document.getElementById("stockValue");
+      const overviewTable = document.querySelector("#overviewTable tbody");
+      const chartCanvas = document.getElementById("inventoryChart");
+
+      // Safety check — only run if chart area exists
+      if (!chartCanvas) {
+        console.warn("⚠️ Chart canvas not found — skipping chart render.");
+        return;
+      }
+
+      // 📊 Stats
+      const today = new Date();
+      totalMedicines.textContent = inventory.length;
+      lowStock.textContent = inventory.filter((m) => m.qty < 10).length;
+      expiredCount.textContent = inventory.filter((m) => new Date(m.expiry) < today).length;
+      stockValue.textContent = inventory.reduce((sum, m) => sum + (m.qty * 50), 0).toLocaleString();
+
+      // 🧾 Overview table
+      overviewTable.innerHTML = inventory.map((m, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m.name}</td>
+          <td>${m.qty}</td>
+          <td>${m.expiry || "-"}</td>
+          <td>${m.category || "-"}</td>
+        </tr>
+      `).join("");
+
+      // 🍩 Chart setup
+      const ctx = chartCanvas.getContext("2d");
+      const categories = [...new Set(inventory.map((m) => m.category || "Uncategorized"))];
+      const counts = categories.map((cat) => inventory.filter((m) => m.category === cat).length);
+
+      // 🧽 Clean up old chart if exists
+      if (window.inventoryChartInstance) {
+        window.inventoryChartInstance.destroy();
+      }
+
+      // 🎨 Create new chart
+      window.inventoryChartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: categories,
+          datasets: [{
+            data: counts,
+            backgroundColor: ["#7C3AED", "#06B6D4", "#F59E0B", "#EF4444", "#10B981"],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: { color: "#fff" }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      console.error("⚠️ Failed to load dashboard:", err);
+    }
+  }
+
+  // Run once DOM ready
+  document.addEventListener("DOMContentLoaded", loadDashboardStats);
+}

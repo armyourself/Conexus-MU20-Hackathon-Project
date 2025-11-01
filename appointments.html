@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Appointments | Conexus</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-appointments">
+  <!-- Navbar (same across all pages) -->
+  <header class="dock-wrap" id="topDock">
+    <nav class="dock navbar">
+      <div class="dock-left">
+        <h2 class="brand">Conexus</h2>
+      </div>
+
+      <ul class="dock-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="emergencies.html">Emergencies</a></li>
+        <li><a href="appointments.html" class="active">Appointments</a></li>
+        <li><a href="alert.html">Alerts</a></li>
+      </ul>
+
+      <div class="dock-right">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌓</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">📅 Doctor Appointments</h1>
+
+    <section class="card form-card">
+      <h2>Book New Appointment</h2>
+      <form id="appointmentForm">
+        <label>Patient Name:</label>
+        <input type="text" id="patientName" required>
+
+        <label>Doctor Name:</label>
+        <input type="text" id="doctorName" required>
+
+        <label>Date:</label>
+        <input type="date" id="appointmentDate" required>
+
+        <label>Time:</label>
+        <input type="time" id="appointmentTime" required>
+
+        <button type="submit" class="primary-btn">Book Appointment</button>
+      </form>
+    </section>
+
+    <section class="card table-card">
+      <h2>Upcoming Appointments</h2>
+      <table id="appointmentsTable" class="styled-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
