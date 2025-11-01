@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Emergencies | Conexus</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body class="page-emergencies">
+  <!-- Dock Navbar -->
+  <header class="dock-wrap" id="topDock">
+    <nav class="dock navbar">
+      <div class="dock-left">
+        <h2 class="brand">Conexus</h2>
+      </div>
+      <ul class="dock-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="emergencies.html" class="active">Emergencies</a></li>
+        <li><a href="alert.html">Alerts</a></li>
+      </ul>
+      <div class="dock-right">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌓</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">🚨 Emergency Map</h1>
+
+    <section class="card">
+      <h2>Live Emergency Locations</h2>
+      <div id="map"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
