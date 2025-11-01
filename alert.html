@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alerts | Conexus</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-alerts">
+  <!-- Dock-like navbar -->
+  <header class="dock-wrap" id="topDock">
+    <nav class="dock navbar">
+      <div class="dock-left">
+        <h2 class="brand">Conexus</h2>
+      </div>
+
+      <ul class="dock-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="alert.html" class="active">Alerts</a></li>
+      </ul>
+
+      <div class="dock-right">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌓</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">⚠️ Alerts & Notifications</h1>
+
+    <section class="card add-card">
+      <h2>Create Alert</h2>
+      <div class="form-row">
+        <input id="alertMessage" type="text" placeholder="Alert message">
+        <select id="alertSeverity">
+          <option value="info">Info</option>
+          <option value="warning">Warning</option>
+          <option value="danger">Danger</option>
+        </select>
+        <button id="addAlertBtn" class="primary-btn">Add Alert</button>
+      </div>
+    </section>
+
+    <section class="card alerts-list">
+      <h2>Active Alerts</h2>
+      <div id="alertsContainer"></div>
+    </section>
+  </main>
+</body>
+</html>

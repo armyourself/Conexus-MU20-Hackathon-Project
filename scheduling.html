@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Scheduling | Conexus</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Conexus</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="alerts.html">Alerts</a></li>
+      <li><a href="scheduling.html" class="active">Scheduling</a></li>
+    </ul>
+    <div class="theme-toggle">
+      <button id="themeSwitch">🌙</button>
+    </div>
+  </nav>
+
+  <!-- Main Section -->
+  <main class="scheduling-container">
+    <h1>Smart Scheduling</h1>
+
+    <!-- Appointment Form -->
+    <section class="appointment-form card">
+      <h2>Book a New Appointment</h2>
+      <form id="appointmentForm">
+        <input type="text" id="patientName" placeholder="Patient Name" required>
+        <input type="text" id="doctorName" placeholder="Doctor Name" required>
+        <input type="date" id="appointmentDate" required>
+        <input type="time" id="appointmentTime" required>
+        <textarea id="reason" placeholder="Reason for Visit" rows="2"></textarea>
+        <button type="submit" class="primary-btn">Book Appointment</button>
+      </form>
+    </section>
+
+    <!-- Appointments List -->
+    <section class="appointments-list card">
+      <h2>Upcoming Appointments</h2>
+      <table id="appointmentsTable">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="appointmentsBody">
+          <!-- JS injects appointments here -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard | Conexus</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body class="page-dashboard">
+  <!-- Dock-like navbar (same in all pages) -->
+  <header class="dock-wrap" id="topDock">
+    <nav class="dock navbar">
+      <div class="dock-left">
+        <h2 class="brand">Conexus</h2>
+      </div>
+
+      <ul class="dock-links">
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="alert.html">Alerts</a></li>
+      </ul>
+
+      <div class="dock-right">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌓</button>
+        <span id="currentUser" class="user-name" aria-hidden="true"></span>
+        <button id="logoutBtn" class="ghost-btn">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">🏥 Dashboard Overview</h1>
+
+    <section class="stats-grid">
+      <div class="stat card">
+        <div class="stat-title">Total Medicines</div>
+        <div class="stat-value" id="totalMedicines">0</div>
+      </div>
+
+      <div class="stat card">
+        <div class="stat-title">Low Stock</div>
+        <div class="stat-value" id="lowStock">0</div>
+      </div>
+
+      <div class="stat card">
+        <div class="stat-title">Expired</div>
+        <div class="stat-value" id="expiredCount">0</div>
+      </div>
+
+      <div class="stat card">
+        <div class="stat-title">Stock Value</div>
+        <div class="stat-value">₹<span id="stockValue">0</span></div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <h2>Inventory Overview</h2>
+      <canvas id="inventoryChart" height="120"></canvas>
+    </section>
+
+    <section class="card table-card">
+      <h2>Inventory Summary</h2>
+      <table id="overviewTable" class="styled-table">
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Qty</th><th>Expiry</th><th>Category</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
