@@ -1,19 +1,19 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "username": "admin",
       "password": "admin123",
       "role": "admin"
     },
     {
-      "id": 2,
+      "id": "2",
       "username": "doctor1",
       "password": "doc123",
       "role": "doctor"
     },
     {
-      "id": 3,
+      "id": "3",
       "username": "patient1",
       "password": "pat123",
       "role": "patient"
@@ -28,7 +28,7 @@
   ],
   "alerts": [
     {
-      "id": 1,
+      "id": "1",
       "message": "System initialized successfully 💻",
       "severity": "info",
       "user": "admin",
@@ -47,6 +47,16 @@
       "severity": "info",
       "user": "hello",
       "global": false
+    }
+  ],
+  "inventory": [
+    {
+      "id": "4317",
+      "name": "shit",
+      "qty": "12",
+      "expiry": "2025-11-01",
+      "supplier": "anus",
+      "category": "shit"
     }
   ]
 }

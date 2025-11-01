@@ -308,3 +308,85 @@ if (document.querySelector(".page-alerts")) {
     loadAlerts();
   });
 }
+// INVENTORY SECTION ---------------------
+const apiInventory = "http://localhost:5000/inventory";
+const tableBody = document.querySelector("#inventoryTable tbody");
+const addMedicineBtn = document.getElementById("addMedicineBtn");
+const searchInput = document.getElementById("search");
+
+if (addMedicineBtn) {
+  addMedicineBtn.addEventListener("click", async () => {
+    const name = document.getElementById("medName").value.trim();
+    const qty = document.getElementById("medQty").value.trim();
+    const expiry = document.getElementById("medExpiry").value.trim();
+    const supplier = document.getElementById("medSupplier").value.trim();
+    const category = document.getElementById("medCategory").value.trim();
+
+    if (!name || !qty) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    await fetch(apiInventory, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        qty,
+        expiry,
+        supplier,
+        category
+      })
+    });
+
+    loadInventory();
+  });
+}
+
+async function loadInventory() {
+  const res = await fetch(apiInventory);
+  const data = await res.json();
+  displayInventory(data);
+}
+
+function displayInventory(list) {
+  tableBody.innerHTML = "";
+  list.forEach((item, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.expiry || "-"}</td>
+      <td>${item.supplier || "-"}</td>
+      <td>${item.category || "-"}</td>
+      <td><button class="delete-btn" data-id="${item.id}">🗑️</button></td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      await fetch(`${apiInventory}/${id}`, { method: "DELETE" });
+      loadInventory();
+    });
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener("input", async (e) => {
+    const res = await fetch(apiInventory);
+    const data = await res.json();
+    const searchTerm = e.target.value.toLowerCase();
+    const filtered = data.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTerm) ||
+        item.supplier.toLowerCase().includes(searchTerm) ||
+        item.category.toLowerCase().includes(searchTerm)
+    );
+    displayInventory(filtered);
+  });
+}
+
+if (tableBody) loadInventory();
