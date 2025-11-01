@@ -481,3 +481,12 @@ body.dark .navbar {
   right: 20px;
   font-size: 20px;
 }
+.msg {
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+body.dark .msg {
+  color: #bbb;
+}

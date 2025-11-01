@@ -171,3 +171,140 @@ if (loginBtn) {
     }
   });
 }
+// ===== 🧠 AUTH LOGIC (No popups, inline messages) =====
+const loginForm2 = document.getElementById("loginForm");
+const signupForm2 = document.getElementById("signupForm");
+const loginMsg = document.getElementById("loginMsg");
+const signupMsg = document.getElementById("signupMsg");
+
+if (signupForm2) {
+  signupForm2.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    signupMsg.textContent = "⏳ Creating your account...";
+    signupMsg.style.color = "white";
+
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
+
+    if (!username || !email || !password) {
+      signupMsg.textContent = "⚠️ Please fill out all fields!";
+      signupMsg.style.color = "orange";
+      return;
+    }
+
+    const res = await fetch("http://localhost:5000/users");
+    const users = await res.json();
+
+    if (users.find((u) => u.username === username)) {
+      signupMsg.textContent = "❌ Username already exists!";
+      signupMsg.style.color = "red";
+      return;
+    }
+
+    await fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password, role: "patient" }),
+    });
+
+    signupMsg.textContent = "✅ Account created! You can sign in now.";
+    signupMsg.style.color = "limegreen";
+    signupForm2.reset();
+  });
+}
+
+if (loginForm2) {
+  loginForm2.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginMsg.textContent = "⏳ Checking credentials...";
+    loginMsg.style.color = "white";
+
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    const res = await fetch("http://localhost:5000/users");
+    const users = await res.json();
+
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+
+    if (user) {
+      loginMsg.textContent = `✅ Welcome back, ${user.username}! Redirecting...`;
+      loginMsg.style.color = "limegreen";
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      setTimeout(() => {
+        if (user.role === "admin") {
+          window.location.href = "admin.html";
+        } else if (user.role === "doctor") {
+          window.location.href = "doctor.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      }, 1000);
+    } else {
+      loginMsg.textContent = "❌ Invalid username or password.";
+      loginMsg.style.color = "red";
+    }
+  });
+}
+// ===== 🚨 ALERT SYSTEM =====
+if (document.querySelector(".page-alerts")) {
+  const alertMessageInput = document.getElementById("alertMessage");
+  const alertSeverityInput = document.getElementById("alertSeverity");
+  const addAlertBtn = document.getElementById("addAlertBtn");
+  const alertsContainer = document.getElementById("alertsContainer");
+  const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+  const API_URL = "http://localhost:5000/alerts";
+
+  // 🔁 Fetch & display alerts
+  async function loadAlerts() {
+    const res = await fetch(API_URL);
+    const alerts = await res.json();
+
+    alertsContainer.innerHTML = "";
+
+    alerts.forEach(alert => {
+      if (
+        alert.global === true ||
+        alert.user === currentUser.username ||
+        currentUser.role === "admin"
+      ) {
+        const alertDiv = document.createElement("div");
+        alertDiv.className = `alert alert-${alert.severity}`;
+        alertDiv.innerHTML = `
+          <p><strong>${alert.severity.toUpperCase()}</strong> — ${alert.message}</p>
+          <small>by ${alert.user}${alert.global ? " 🌍 (Global)" : ""}</small>
+        `;
+        alertsContainer.appendChild(alertDiv);
+      }
+    });
+  }
+
+  loadAlerts();
+
+  // 🧠 Add new alert
+  addAlertBtn.addEventListener("click", async () => {
+    const message = alertMessageInput.value.trim();
+    const severity = alertSeverityInput.value;
+    if (!message) return alert("Enter an alert message, bro 💀");
+
+    const newAlert = {
+      message,
+      severity,
+      user: currentUser.username,
+      global: currentUser.role === "admin" // only admin makes global
+    };
+
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newAlert)
+    });
+
+    alertMessageInput.value = "";
+    loadAlerts();
+  });
+}

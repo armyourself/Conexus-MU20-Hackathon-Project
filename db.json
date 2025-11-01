@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "doctor1",
+      "password": "doc123",
+      "role": "doctor"
+    },
+    {
+      "id": 3,
+      "username": "patient1",
+      "password": "pat123",
+      "role": "patient"
+    },
+    {
+      "id": "ec64",
+      "username": "hello",
+      "email": "pluhar@gmail.com",
+      "password": "byebye",
+      "role": "patient"
+    }
+  ],
+  "alerts": [
+    {
+      "id": 1,
+      "message": "System initialized successfully 💻",
+      "severity": "info",
+      "user": "admin",
+      "global": true
+    },
+    {
+      "id": "c080",
+      "message": "I died",
+      "severity": "warning",
+      "user": "apollo",
+      "global": false
+    },
+    {
+      "id": "1951",
+      "message": "I am died",
+      "severity": "info",
+      "user": "hello",
+      "global": false
+    }
+  ]
+}
