@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CityCare — Patient Dashboard</title>
+<style>
+  header {
+  transition: transform 0.3s ease;
+  transform: translateY(-100%);
+}
+
+header.visible {
+  transform: translateY(0);
+}
+
+:root {
+  --border: #cfd7e6;
+  --bg: #f7f9fd;
+  --card: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #5c6e8c;
+  --accent: #0059d6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--accent);
+  background: #eaf0ff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.nav a {
+  color: #003c99;
+  text-decoration: none;
+  margin: 0 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.nav a.active,
+.nav a:hover {
+  background: #dce7ff;
+}
+
+.main {
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b4c3e0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  color: #ffffff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.field {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+h2 {
+  color: var(--accent);
+  margin: 6px 0;
+}
+
+.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #eef3ff;
+  color: #003c99;
+  font-size: 12px;
+}
+</style>
+
+</head><body>
+<header>
+  <h1>🏥 CityCare — Indore</h1>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="map.html">Map</a>
+    <a class="active" href="patients.html">Patients</a>
+    <a href="schedule.html">Scheduling</a>
+    <a href="sharing.html">Data Sharing</a>
+    <a href="alerts.html">Alerts</a>
+  </nav>
+</header>
+
+<div class="main">
+
+  <!-- Patient login -->
+  <div class="card">
+    <h2>Patient Login</h2>
+    <div class="row">
+      <div class="field"><label for="p_user">Patient User ID</label><input id="p_user" placeholder="USR_PAT_001"></div>
+      <div class="field" style="max-width:220px"><label for="p_pin">PIN</label><input id="p_pin" type="password" placeholder="1111"></div>
+      <div class="field" style="max-width:160px;align-self:flex-end"><button id="btn_plog">Login</button></div>
+    </div>
+    <div id="p_status" class="small"></div>
+    <div class="small" style="margin-top:6px">Demo: USR_PAT_001 / 1111</div>
+  </div>
+
+  <!-- Health profile -->
+  <div class="card" id="profile_card" style="display:none">
+    <h2>Health Profile</h2>
+    <div class="row">
+      <div class="field"><label for="name">Name</label><input id="name"></div>
+      <div class="field"><label for="age">Age</label><input id="age" type="number"></div>
+      <div class="field"><label for="gender">Gender</label>
+        <select id="gender"><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="weight">Weight (kg)</label><input id="weight" type="number"></div>
+      <div class="field"><label for="height">Height (cm)</label><input id="height" type="number"></div>
+    </div>
+    <div class="field"><label for="conditions">Medical Conditions</label><textarea id="conditions" placeholder="e.g., Diabetes, Hypertension"></textarea></div>
+    <div class="field"><label for="allergies">Allergies</label><textarea id="allergies" placeholder="e.g., Penicillin, Dust"></textarea></div>
+    <div class="field"><label for="medications">Current Medications</label><textarea id="medications" placeholder="e.g., Metformin 500mg once daily"></textarea></div>
+    <div class="field"><label for="others">Other Notes</label><textarea id="others" placeholder="Any other relevant details..."></textarea></div>
+    <button id="btn_save_profile">Save Profile</button>
+    <div id="save_msg" class="small" style="margin-top:6px"></div>
+  </div>
+
+  <!-- Sharing policy -->
+  <div class="card" id="share_card" style="display:none">
+    <h2>Sharing Preferences</h2>
+    <p class="small">Choose who can view your data on the Data Sharing page.</p>
+    <div class="row">
+      <div class="field">
+        <label for="share_mode">Share with</label>
+        <select id="share_mode">
+          <option value="all">All</option>
+          <option value="alldoctors">All Doctors</option>
+          <option value="custom">Customize…</option>
+        </select>
+      </div>
+    </div>
+    <div id="custom_block" style="display:none">
+      <div class="field">
+        <label for="custom_ids">Enter specific User IDs (comma-separated)</label>
+        <input id="custom_ids" placeholder="e.g., USR_DOC_001, USR_PHA_001">
+      </div>
+    </div>
+    <button id="btn_save_share">Save Sharing</button>
+    <div id="share_msg" class="small" style="margin-top:6px"></div>
+    <div id="share_summary" class="small" style="margin-top:6px"></div>
+  </div>
+
+</div>
+
+<script>
+
+// --- demo PIN rules ---
+function roleFromUser(u){
+  if(!u) return null;
+  if(u.startsWith("USR_PAT_")) return "patient";
+  if(u.startsWith("USR_DOC_")) return "doctor";
+  if(u.startsWith("USR_PHA_")) return "pharmacist";
+  if(u.startsWith("USR_NUR_")) return "nurse";
+  if(u.startsWith("USR_ADM_")) return "admin";
+  return "unknown";
+}
+function pinOk(u,p){
+  const r=roleFromUser(u);
+  if(r==="patient") return p==="1111";
+  if(r==="doctor") return p==="2222";
+  if(r==="nurse") return p==="3333";
+  if(r==="pharmacist") return p==="4444";
+  if(r==="admin") return p==="5555";
+  return false;
+}
+
+// --- storage shape ---
+// localStorage.key "patient_profiles":
+// { "USR_PAT_001": { info:{...}, share:{ mode:"all"|"alldoctors"|"custom", list:["USR_DOC_001"...] } }, ... }
+let store = JSON.parse(localStorage.getItem("patient_profiles")||"{}");
+let currentPatient = null;
+
+// elements
+const elPUser = document.getElementById('p_user');
+const elPPin  = document.getElementById('p_pin');
+const elPBtn  = document.getElementById('btn_plog');
+const elPStat = document.getElementById('p_status');
+
+const elProfCard = document.getElementById('profile_card');
+const elShareCard= document.getElementById('share_card');
+
+const elName = document.getElementById('name');
+const elAge  = document.getElementById('age');
+const elGender=document.getElementById('gender');
+const elWeight=document.getElementById('weight');
+const elHeight=document.getElementById('height');
+const elCond = document.getElementById('conditions');
+const elAll  = document.getElementById('allergies');
+const elMeds = document.getElementById('medications');
+const elOthers=document.getElementById('others');
+const elSaveProf=document.getElementById('btn_save_profile');
+const elSaveMsg=document.getElementById('save_msg');
+
+const elMode = document.getElementById('share_mode');
+const elCustomBlock=document.getElementById('custom_block');
+const elCustomIds=document.getElementById('custom_ids');
+const elSaveShare=document.getElementById('btn_save_share');
+const elShareMsg=document.getElementById('share_msg');
+const elShareSummary=document.getElementById('share_summary');
+
+// login
+elPBtn.onclick=()=>{
+  const u=elPUser.value.trim(), p=elPPin.value.trim();
+  if(!u||!p) return alert("Enter Patient User ID and PIN");
+  if(roleFromUser(u)!=="patient") return alert("This page is for patients only (User ID should start with USR_PAT_)");
+  if(!pinOk(u,p)) return alert("Invalid PIN");
+  currentPatient=u;
+  elPStat.textContent="✅ Logged in as "+u;
+  elProfCard.style.display="block";
+  elShareCard.style.display="block";
+  // load existing
+  const rec = store[u]||{info:{},share:{mode:"alldoctors",list:[]}};
+  const d = rec.info||{};
+  elName.value=d.name||""; elAge.value=d.age||""; elGender.value=d.gender||"Male";
+  elWeight.value=d.weight||""; elHeight.value=d.height||"";
+  elCond.value=d.conditions||""; elAll.value=d.allergies||"";
+  elMeds.value=d.medications||""; elOthers.value=d.others||"";
+  elMode.value=(rec.share&&rec.share.mode)||"alldoctors";
+  elCustomIds.value=(rec.share&&rec.share.list||[]).join(", ");
+  elCustomBlock.style.display = elMode.value==="custom" ? "block" : "none";
+  showShareSummary();
+};
+
+// profile save
+elSaveProf.onclick=()=>{
+  if(!currentPatient) return alert("Login first");
+  const info={
+    name:elName.value.trim(), age:elAge.value.trim(), gender:elGender.value,
+    weight:elWeight.value.trim(), height:elHeight.value.trim(),
+    conditions:elCond.value.trim(), allergies:elAll.value.trim(),
+    medications:elMeds.value.trim(), others:elOthers.value.trim()
+  };
+  const rec = store[currentPatient]||{info:{},share:{mode:"alldoctors",list:[]}};
+  rec.info = info;
+  store[currentPatient]=rec;
+  localStorage.setItem("patient_profiles", JSON.stringify(store));
+  elSaveMsg.textContent="✅ Profile saved";
+};
+
+// sharing UI
+elMode.onchange=()=>{
+  elCustomBlock.style.display = elMode.value==="custom" ? "block" : "none";
+};
+elSaveShare.onclick=()=>{
+  if(!currentPatient) return alert("Login first");
+  let list=[];
+  if(elMode.value==="custom"){
+    list = elCustomIds.value.split(",").map(s=>s.trim()).filter(Boolean);
+  }
+  const rec = store[currentPatient]||{info:{},share:{mode:"alldoctors",list:[]}};
+  rec.share={mode:elMode.value,list};
+  store[currentPatient]=rec;
+  localStorage.setItem("patient_profiles", JSON.stringify(store));
+  elShareMsg.textContent="✅ Sharing preferences saved";
+  showShareSummary();
+};
+
+function showShareSummary(){
+  const rec = store[currentPatient];
+  if(!rec){ elShareSummary.textContent=""; return; }
+  if(rec.share.mode==="all") elShareSummary.textContent="Current: Shared with **ALL** users.";
+  else if(rec.share.mode==="alldoctors") elShareSummary.textContent="Current: Shared with **ALL DOCTORS**.";
+  else elShareSummary.textContent="Current: **Custom** → "+(rec.share.list.join(", ")||"no users yet");
+}
+
+  const header = document.querySelector('header');
+
+  let mouseAtTop = false;
+
+  document.addEventListener('mousemove', (e) => {
+    // If cursor is near the top of the screen, show navbar
+    if (e.clientY < 50) {
+      if (!mouseAtTop) {
+        mouseAtTop = true;
+        header.classList.add('visible');
+      }
+    } else {
+      if (mouseAtTop) {
+        mouseAtTop = false;
+        header.classList.remove('visible');
+      }
+    }
+  });
+</script>
+</body></html>

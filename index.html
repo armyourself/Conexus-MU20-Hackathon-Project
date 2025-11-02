@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CityCare — Home</title>
+<style>
+  header {
+  transition: transform 0.3s ease;
+  transform: translateY(-100%);
+}
+
+header.visible {
+  transform: translateY(0);
+}
+
+:root {
+  --border: #cfd7e6;
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #4a5d7a;
+  --accent: #0059d6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--accent);
+  background: #e9efff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.nav a {
+  color: #003c99;
+  text-decoration: none;
+  margin: 0 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.nav a.active,
+.nav a:hover {
+  background: #d9e3ff;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+input,
+button {
+  padding: 8px;
+  border: 1px solid #b4c3e0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+}
+
+.main {
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .grid.cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #eef3ff;
+  color: #003c99;
+  font-size: 12px;
+}
+</style>
+
+</head><body>
+<header>
+  <h1>🏥 CityCare — Indore</h1>
+  <nav class="nav">
+    <a class="active" href="index.html">Home</a>
+    <a href="map.html">Map</a>
+    <a href="patients.html">Patients</a>
+    <a href="schedule.html">Scheduling</a>
+    <a href="sharing.html">Data Sharing</a>
+    <a href="alerts.html">Alerts</a>
+  </nav>
+  <div class="row">
+    <input id="user_id" placeholder="User (USR_PAT_001)"><input id="pin" placeholder="PIN"><button id="btn_login">Login</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="card">
+    <h2 style="margin:6px 0;color:var(--accent)">Connected Hospital Ecosystem</h2>
+    <p class="small">One pane for city-wide beds, scheduling, consented data sharing, alerts, and IoT signals. Built for Indore.</p>
+  </div>
+
+  <div class="grid cols-3">
+    <a class="card" href="map.html"><h3>🗺️ CityCare Grid</h3><div class="small">Hospitals • Incidents • Ambulances</div></a>
+    <a class="card" href="patients.html"><h3>👤 Patient Dashboard</h3><div class="small">Reports, appointments, consents</div></a>
+    <a class="card" href="schedule.html"><h3>📅 Smart Scheduling</h3><div class="small">Doctor visits & lab tests</div></a>
+    <a class="card" href="sharing.html"><h3>🔒 Data Sharing</h3><div class="small">Consent by scope/target</div></a>
+    <a class="card" href="alerts.html"><h3>🔔 Alerts & IoT</h3><div class="small">Role/patient feeds + device triggers</div></a>
+    <div class="card"><h3>✅ Demo Users</h3>
+      <div class="small">USR_PAT_001/1111 • USR_DOC_001/2222 • USR_NUR_001/3333 • USR_PHA_001/4444 • USR_ADM_001/5555</div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+const API="http://127.0.0.1:8000"; let SESSION=null;
+document.getElementById('btn_login').onclick=async()=>{
+  const user=document.getElementById('user_id').value.trim(), pin=document.getElementById('pin').value.trim();
+  if(!user||!pin) return alert("Enter user & PIN");
+  const r=await fetch(`${API}/auth/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:user,pin})});
+  if(!r.ok) return alert("Invalid PIN");
+  SESSION=await r.json(); alert(`Logged in as ${SESSION.user.name} (${SESSION.user.role})`);
+};
+
+  const header = document.querySelector('header');
+
+  let mouseAtTop = false;
+
+  document.addEventListener('mousemove', (e) => {
+    // If cursor is near the top of the screen, show navbar
+    if (e.clientY < 50) {
+      if (!mouseAtTop) {
+        mouseAtTop = true;
+        header.classList.add('visible');
+      }
+    } else {
+      if (mouseAtTop) {
+        mouseAtTop = false;
+        header.classList.remove('visible');
+      }
+    }
+  });
+</script>
+
+</body></html>
